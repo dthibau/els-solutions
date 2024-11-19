@@ -1,0 +1,12 @@
+
+
+PUT /_ingest/pipeline/attachment?pretty
+{
+  "description" : "Extract attachment information",
+  "processors" : [
+    {  "attachment" : { "field" : "data" } },
+    {  "remove" : { "field" : "data" } }
+  ]
+}
+
+GET /_ingest/pipeline

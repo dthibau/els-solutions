@@ -1,0 +1,46 @@
+
+
+curl -XPOST -H "Content-Type: application/json" 'http://localhost:9200/blogs/_doc/' --data-binary "@_doc1.json"
+
+POST blogs/_doc/
+{
+"title": "My first blog _doc",
+"text": "Just trying this out...",
+"date": "2014/01/01"
+}
+
+GET /blogs/_doc/AVy_tEzB8don7ye2G30S
+
+
+
+POST /blogs/_update/AVy_tEzB8don7ye2G30S
+{
+  "doc" : {
+	"tags" : [ "testing" ],
+	"views": 0
+  }
+}
+
+POST /blogs/_update/AVgk1HKzqAVmHQ8gRbdi
+{
+"script" : "ctx._source.views+=1"
+}
+
+POST /blogs/_update/AVy_tEzB8don7ye2G30S
+{
+"script" : {
+  "inline" : "ctx._source.tags.add(params.new_tag)",
+  "params" :  {
+    "new_tag" : "search"
+  }
+}
+}
+
+curl -XPOST 'localhost:9200/blogs/_doc/AVy_tEzB8don7ye2G30S/_update?pretty' -d'
+{
+"script" : {
+  "inline" : "ctx._source.remove(\"tags\")"
+}
+}'
+
+curl -XPOST 'localhost:9200/blogs/_doc/_bulk?pretty' --data-binary "@bulk.json"
